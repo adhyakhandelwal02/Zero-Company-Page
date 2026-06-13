@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Zero · Talent Partner Network — Company Page (Halcyon)
+     Two views in one: Public + Personalized (signed-in). Toggle top-right.
+     Sample employer: Halcyon (clean-energy storage).
+     Self-contained: HTML + CSS + vanilla JS, Google Fonts only. -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Halcyon · Zero Talent Partner Network</title>
+<meta name="description" content="Halcyon — storing clean energy so the grid never sleeps. 14 early-career roles open. A Zero Verified Partner." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Caveat:wght@400;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    /* Zero University palette — green-forward, organic. Mirrors the mint sphere
+       logo on deep teal-green. --solar/--solar-soft kept as token names but now
+       carry the Zero brand greens (primary accent + mint highlight). */
+    --ink:#0A1A13; --ink-2:#0E241B; --paper:#F5F8F2; --card:#FFFFFF;
+    --solar:#2FBF85; --solar-soft:#97E8BE;
+    --on-accent:#052A1E;
+    --ready:#159A6B; --grow:#C98A2B; --stretch:#3E7CC4;
+    --tint:#E6F6EC; --tint-2:#EDF3EC; --on-tint:#157A56;
+    --text:#0F1A14; --muted:#54675D; --muted-d:#9BC0AE;
+    --line:#E4E9E0; --line-d:rgba(255,255,255,.10);
+    --r:18px; --maxw:1120px;
+    --disp:"Bricolage Grotesque",system-ui,sans-serif;
+    --body:"Hanken Grotesk",system-ui,sans-serif;
+    --mono:"Space Mono",ui-monospace,monospace;
+    --serif:"Playfair Display",Georgia,serif;
+    --script:"Caveat",cursive;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  :focus-visible{outline:2px solid var(--solar-soft);outline-offset:2px;border-radius:4px}
+
+  /* reveal-on-scroll */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- mode bar ---------- */
+  .modebar{position:sticky;top:0;z-index:60;background:rgba(11,21,18,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line-d);color:#fff}
+  .modebar .wrap{display:flex;align-items:center;gap:16px;height:58px}
+  .brandtag{display:flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:700;letter-spacing:-.01em}
+  .brandtag .zero{width:26px;height:26px;border-radius:50%;overflow:hidden;display:block;flex:none}
+  .brandtag .zero svg{width:26px;height:26px;display:block}
+  .brandtag small{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-d);font-weight:400}
+  .seg{margin-left:auto;display:flex;background:rgba(255,255,255,.07);border:1px solid var(--line-d);border-radius:999px;padding:4px}
+  .seg button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-d);background:none;border:0;padding:8px 15px;border-radius:999px;cursor:pointer;transition:color .2s,background .25s}
+  .seg button.on{background:var(--solar);color:var(--on-accent);font-weight:700}
+
+  /* signed-in strip */
+  .whoami{background:var(--ink-2);color:#fff;border-bottom:1px solid var(--line-d);overflow:hidden;max-height:0;transition:max-height .4s ease}
+  body.mode-personal .whoami{max-height:64px}
+  .whoami .wrap{display:flex;align-items:center;gap:13px;height:64px;font-size:14px}
+  .ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--solar),var(--solar-soft));color:var(--on-accent);display:grid;place-items:center;font-weight:700;font-family:var(--disp);flex:none}
+  .whoami .nm{font-family:var(--body);font-weight:600;color:#fff}
+  .lvl{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--solar-soft);border:1px solid var(--line-d);padding:3px 9px;border-radius:999px}
+  .whoami .jr{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--ready);display:flex;align-items:center;gap:7px}
+  .whoami .jr::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ready);box-shadow:0 0 0 4px rgba(31,169,113,.18);animation:pulse 2.4s ease-in-out infinite}
+
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(31,169,113,.30)}50%{box-shadow:0 0 0 6px rgba(31,169,113,0)}}
+  @keyframes pulseSolar{0%,100%{box-shadow:0 0 0 0 rgba(47,191,133,.35)}50%{box-shadow:0 0 0 7px rgba(47,191,133,0)}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;background:radial-gradient(1100px 480px at 80% -10%, #163230 0%, rgba(22,50,48,0) 60%), linear-gradient(170deg,var(--ink) 0%, var(--ink-2) 100%);color:#fff;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-130px;top:-170px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle, rgba(47,191,133,.40) 0%, rgba(47,191,133,0) 62%);pointer-events:none}
+  .hero .wrap{position:relative;padding:50px 24px 46px}
+  .cover-tag{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-d);border-radius:999px;padding:6px 13px;color:var(--solar-soft);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .cover-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--solar);box-shadow:0 0 0 4px rgba(47,191,133,.22);animation:pulseSolar 2.4s ease-in-out infinite}
+  .heroGrid{display:grid;grid-template-columns:1fr 300px;gap:44px;align-items:center;margin-top:24px}
+  .logo{display:flex;align-items:center;gap:15px;margin-bottom:18px}
+  .logo .mark{width:62px;height:62px;border-radius:16px;background:linear-gradient(145deg,var(--solar),var(--solar-soft));display:grid;place-items:center;box-shadow:0 8px 30px rgba(47,191,133,.35);flex:none}
+  .logo .mark svg{width:30px;height:30px}
+  .logo h1{font-family:var(--disp);font-weight:800;font-size:42px;line-height:1;letter-spacing:-.025em;margin:0}
+  .logo .verified{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--on-accent);background:var(--solar-soft);padding:3px 8px;border-radius:6px;text-transform:uppercase;font-weight:700;align-self:flex-start;margin-top:4px}
+  .tagline{font-family:var(--disp);font-weight:500;font-size:clamp(22px,3.3vw,33px);line-height:1.18;letter-spacing:-.015em;max-width:19ch;margin:0 0 20px}
+  .facts{display:flex;flex-wrap:wrap;gap:8px 9px;margin-bottom:24px}
+  .facts span{font-family:var(--mono);font-size:12px;color:var(--muted-d);border:1px solid var(--line-d);border-radius:999px;padding:6px 12px;display:inline-flex;gap:7px;align-items:center}
+  .facts span b{color:#fff;font-weight:400}
+  .heroActions{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{font-family:var(--body);font-weight:600;font-size:15px;border-radius:12px;padding:13px 22px;border:1px solid transparent;cursor:pointer;transition:transform .12s ease,background .2s,border-color .2s}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--solar);color:var(--on-accent)}
+  .btn-primary:hover{background:var(--solar-soft)}
+  .btn-ghost{background:transparent;color:#fff;border-color:var(--line-d)}
+  .btn-ghost:hover{border-color:rgba(255,255,255,.4)}
+  .btn-ghost.following{background:rgba(255,255,255,.08)}
+
+  /* readiness ring */
+  .ringCard{justify-self:end;width:300px;background:rgba(255,255,255,.04);border:1px solid var(--line-d);border-radius:24px;padding:26px;text-align:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+  .ringWrap{position:relative;width:188px;height:188px;margin:2px auto 14px}
+  .ringWrap svg{transform:rotate(-90deg);width:188px;height:188px}
+  .ringWrap .track{fill:none;stroke:rgba(255,255,255,.09);stroke-width:13}
+  .ringWrap .meter{fill:none;stroke:url(#chg);stroke-width:13;stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)}
+  .ringCenter{position:absolute;inset:0;display:grid;place-content:center;gap:2px}
+  .ringCenter .big{font-family:var(--mono);font-weight:700;font-size:44px;line-height:1;color:#fff}
+  .ringCenter .big small{font-size:20px;color:var(--solar-soft)}
+  .ringCenter .cap{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-d)}
+  .ringLabel{font-size:14px;color:var(--muted-d);line-height:1.4}
+  .ringLabel b{color:#fff;font-weight:600}
+  .ringCta{margin-top:15px}
+  .ringCta .btn{width:100%;font-size:14px;padding:11px}
+
+  .p-only,.pub-only{display:none}
+  body.mode-personal .p-only{display:block}
+  body.mode-public  .pub-only{display:block}
+
+  /* ---------- stats strip ---------- */
+  .stats{border-bottom:1px solid var(--line);background:var(--card)}
+  .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);padding-left:0;padding-right:0}
+  .stat{padding:30px 22px;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat .v{font-family:var(--mono);font-weight:700;font-size:33px;letter-spacing:-.02em}
+  .stat .v small{font-size:18px;color:var(--solar)}
+  .stat .k{font-size:13px;color:var(--muted);margin-top:4px}
+  .stat .sub{font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--muted-d);margin-top:3px;text-transform:none}
+
+  /* ---------- sections ---------- */
+  section.block{padding:62px 0;border-bottom:1px solid var(--line)}
+  .head{max-width:680px;margin-bottom:34px}
+  .head h2{font-family:var(--disp);font-weight:700;font-size:clamp(26px,3.3vw,35px);letter-spacing:-.02em;margin:10px 0 0}
+  .head p{color:var(--muted);font-size:17px;margin:12px 0 0}
+
+  /* why + values */
+  .why{font-family:var(--disp);font-weight:500;font-size:clamp(22px,2.9vw,30px);line-height:1.32;letter-spacing:-.015em;max-width:25ch}
+  .why em{font-style:normal;color:var(--text);background:linear-gradient(transparent 60%, rgba(47,191,133,.32) 60%)}
+  .values{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:42px}
+  .value{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;transition:transform .18s ease,box-shadow .18s ease}
+  .value:hover{transform:translateY(-3px);box-shadow:0 18px 40px -24px rgba(16,26,22,.4)}
+  .value .vi{width:38px;height:38px;border-radius:11px;background:var(--tint);color:var(--on-tint);display:grid;place-items:center;margin-bottom:14px}
+  .value .vi svg{width:20px;height:20px}
+  .value h3{font-family:var(--disp);font-weight:700;font-size:17px;margin:0 0 6px;letter-spacing:-.01em}
+  .value p{margin:0;color:var(--muted);font-size:14px}
+
+  /* initiatives */
+  .inits{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .init{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--card);transition:transform .18s ease,box-shadow .18s ease}
+  .init:hover{transform:translateY(-3px);box-shadow:0 18px 40px -24px rgba(16,26,22,.4)}
+  .init .top{height:118px;background:linear-gradient(135deg,var(--ink),var(--ink-2));position:relative;overflow:hidden}
+  .init .top::after{content:"";position:absolute;inset:0;background:radial-gradient(160px 120px at 78% 22%, rgba(47,191,133,.32), transparent 70%)}
+  .init .top .ib{position:absolute;left:16px;top:14px;z-index:1;font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--solar-soft);border:1px solid var(--line-d);padding:4px 9px;border-radius:999px}
+  .init .top .ic{position:absolute;right:16px;bottom:-2px;font-family:var(--disp);font-weight:800;font-size:64px;color:rgba(255,255,255,.07);line-height:1}
+  .init .body{padding:18px 20px 22px}
+  .init h3{font-family:var(--disp);font-weight:700;font-size:18px;margin:0 0 7px;letter-spacing:-.01em}
+  .init p{margin:0;color:var(--muted);font-size:14px}
+
+  /* fit / what we look for */
+  .fitGrid{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:start}
+  .fitPanel{background:var(--ink);color:#fff;border-radius:24px;padding:30px;position:relative;overflow:hidden}
+  .fitPanel::after{content:"";position:absolute;right:-80px;top:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(47,191,133,.22),transparent 65%)}
+  .fitPanel .eyebrow{color:var(--solar-soft)}
+  .fitPanel h3{font-family:var(--disp);font-weight:700;font-size:22px;margin:8px 0 18px;letter-spacing:-.01em;position:relative}
+  .fitRow{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line-d);position:relative}
+  .fitRow:last-child{border-bottom:0}
+  .fitRow .nm{flex:1}
+  .fitRow .nm b{display:block;font-weight:600}
+  .fitRow .nm span{display:block;font-size:12.5px;color:var(--muted-d)}
+  .fitRow .nm .bench{font-size:11.5px;color:var(--muted-d);opacity:.75;font-style:italic}
+  .fitBar{width:118px;height:8px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;flex:none}
+  .fitBar i{display:block;height:100%;border-radius:999px;width:0;transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+  .fitBar.s i{background:linear-gradient(90deg,var(--solar),var(--solar-soft))}
+  .fitBar.b i{background:linear-gradient(90deg,#7aa2ff,#a9c2ff)}
+  .fitBar.g i{background:rgba(255,255,255,.3)}
+  .fitTag{font-family:var(--mono);font-size:10px;letter-spacing:.05em;padding:3px 8px;border-radius:6px;text-transform:uppercase;flex:none}
+  .fitTag.s{background:rgba(31,169,113,.18);color:#7be0b4}
+  .fitTag.b{background:rgba(122,162,255,.16);color:#a9c2ff}
+  .fitTag.g{background:rgba(255,255,255,.08);color:var(--muted-d)}
+  .lookList{list-style:none;padding:0;margin:0}
+  .lookList li{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line);font-size:15.5px}
+  .lookList li:last-child{border-bottom:0}
+  .lookList .ck{width:22px;height:22px;border-radius:7px;background:var(--tint);color:var(--on-tint);display:grid;place-items:center;flex:none;font-size:13px;font-weight:700}
+  .fitNote{font-size:14.5px;color:var(--muted);margin-top:18px}
+  .pubLock{border:1px dashed var(--line);border-radius:var(--r);padding:24px;background:#fff;text-align:center}
+  .pubLock .ringMini{font-family:var(--mono);font-size:13px;color:var(--solar);margin-bottom:6px;letter-spacing:.3em}
+
+  /* roles */
+  .rolesTop{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+  .sortNote{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .roleList{display:flex;flex-direction:column;gap:12px}
+  .role{display:grid;grid-template-columns:64px 1fr auto;gap:18px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;cursor:pointer}
+  .role:hover{border-color:#d8d4c6;box-shadow:0 14px 34px -26px rgba(16,26,22,.45);transform:translateY(-2px)}
+  .roleMatch{width:64px;text-align:center;position:relative}
+  .roleMatch .mv{font-family:var(--mono);font-weight:700;font-size:22px;line-height:1;display:inline-flex;align-items:flex-start;gap:2px}
+  .roleMatch .ml{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+  .role.ready .mv{color:var(--ready)} .role.grow .mv{color:var(--grow)} .role.stretch .mv{color:var(--stretch)}
+  /* match tooltip */
+  .qm{width:13px;height:13px;border-radius:50%;border:1px solid currentColor;color:var(--muted);font-family:var(--mono);font-size:8px;line-height:11px;text-align:center;display:inline-block;cursor:help;margin-top:1px;flex:none;position:relative}
+  .qm:hover .tip,.qm:focus .tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+  .qm .tip{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%) translateY(4px);width:210px;background:var(--ink);color:#fff;font-family:var(--body);font-size:11.5px;line-height:1.4;letter-spacing:0;text-transform:none;font-weight:400;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--line-d);box-shadow:0 14px 40px -18px rgba(0,0,0,.6);opacity:0;visibility:hidden;transition:opacity .18s ease,transform .18s ease,visibility .18s;z-index:20;white-space:normal}
+  .qm .tip::before{content:"";position:absolute;left:50%;top:-5px;transform:translateX(-50%) rotate(45deg);width:9px;height:9px;background:var(--ink);border-left:1px solid var(--line-d);border-top:1px solid var(--line-d)}
+  .roleNew{width:64px;display:grid;place-items:center}
+  .roleNew .dot{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 9px}
+  .roleMain h3{font-family:var(--disp);font-weight:700;font-size:18.5px;margin:0 0 6px;letter-spacing:-.01em}
+  .roleMeta{display:flex;flex-wrap:wrap;gap:7px 8px}
+  .chip{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--tint-2);border-radius:7px;padding:4px 9px}
+  .chip.pay{color:var(--on-accent);background:var(--solar-soft)}
+  .roleR{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  .fitTag2{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:999px}
+  .fitTag2.ready{background:rgba(31,169,113,.12);color:var(--ready)}
+  .fitTag2.grow{background:rgba(201,138,43,.14);color:var(--grow)}
+  .fitTag2.stretch{background:rgba(62,124,196,.13);color:var(--stretch)}
+  .role .apply{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted)}
+  .posted{font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  /* growth + conversion */
+  .growGrid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+  .convo{background:linear-gradient(150deg,var(--ink),var(--ink-2));border-radius:24px;padding:36px;color:#fff;text-align:center;position:relative;overflow:hidden}
+  .convo::after{content:"";position:absolute;left:-60px;bottom:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(47,191,133,.22),transparent 65%)}
+  .convo .big{font-family:var(--mono);font-weight:700;font-size:84px;line-height:1;background:linear-gradient(90deg,var(--solar),var(--solar-soft));-webkit-background-clip:text;background-clip:text;color:transparent;position:relative}
+  .convo .cap{color:var(--muted-d);font-size:15px;margin-top:8px;position:relative}
+  .growList{list-style:none;padding:0;margin:0}
+  .growList li{padding:16px 0;border-bottom:1px solid var(--line)}
+  .growList li:last-child{border-bottom:0}
+  .growList b{font-family:var(--disp);font-weight:700;font-size:17px;display:block;margin-bottom:3px;letter-spacing:-.01em}
+  .growList span{color:var(--muted);font-size:14.5px}
+
+  /* voices */
+  .voices{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .voice{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column}
+  .voice .q{font-size:16px;line-height:1.5;flex:1;margin:0}
+  .voice .q::before{content:"\201C";font-family:var(--disp);font-size:46px;color:var(--solar);line-height:0;vertical-align:-18px;margin-right:2px}
+  .voice .who{display:flex;align-items:center;gap:11px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+  .voice .va{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--ink),var(--ink-2));color:#fff;display:grid;place-items:center;font-weight:700;font-family:var(--disp);flex:none}
+  .voice .who b{font-weight:600;font-size:14.5px}
+  .voice .who span{display:block;font-size:12.5px;color:var(--muted)}
+  .voice .zlink{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--on-tint);background:var(--tint);padding:4px 8px;border-radius:6px;align-self:flex-start}
+
+  /* practical + process */
+  .twoCol{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+  .infoGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .info{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card)}
+  .info .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .info .v{font-size:15px;font-weight:600}
+  .info .v.ok{color:var(--ready)}
+  .perks{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .perks span{font-size:13px;background:var(--tint-2);border-radius:999px;padding:7px 13px}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:0}
+  .steps li{position:relative;padding:0 0 22px 52px;counter-increment:s}
+  .steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:-2px;font-family:var(--mono);font-weight:700;font-size:13px;color:var(--solar);width:34px;height:34px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;background:var(--card)}
+  .steps li::after{content:"";position:absolute;left:17px;top:34px;bottom:6px;width:1px;background:var(--line)}
+  .steps li:last-child{padding-bottom:0}
+  .steps li:last-child::after{display:none}
+  .steps b{font-family:var(--disp);font-weight:700;font-size:16.5px;display:block;letter-spacing:-.01em}
+  .steps span{color:var(--muted);font-size:14px}
+  .steps .t{font-family:var(--mono);font-size:11px;color:var(--solar);float:right}
+
+  /* recruiter / partner CTA banner (Improvement #2) */
+  .partner{background:var(--tint);border-top:1px solid rgba(47,191,133,.30);border-bottom:1px solid rgba(47,191,133,.30);padding:40px 0}
+  .partner .wrap{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap}
+  .partner .eyebrow{color:var(--on-tint);letter-spacing:.14em;margin-bottom:10px;display:block}
+  .partner h2{font-family:var(--disp);font-weight:700;font-size:clamp(20px,2.5vw,26px);color:var(--ink);letter-spacing:-.015em;margin:0 0 8px}
+  .partner p{font-size:15px;color:var(--muted);max-width:460px;margin:0}
+  .partner .pr{text-align:right}
+  .partner .pr .btn{display:inline-flex;align-items:center;gap:7px}
+  .partner .pr small{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px}
+
+  /* footer cta */
+  .foot{background:var(--ink);color:#fff;text-align:center;padding:70px 24px}
+  .foot h2{font-family:var(--disp);font-weight:700;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.02em;margin:0 0 10px}
+  .foot p{color:var(--muted-d);margin:0 0 26px}
+  .foot .by{margin-top:30px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-d)}
+
+  @media(max-width:880px){
+    .heroGrid{grid-template-columns:1fr;gap:30px}
+    .ringCard{justify-self:stretch;width:100%}
+    .stats .wrap{grid-template-columns:1fr 1fr}
+    .stat:nth-child(2){border-right:0}
+    .stat{border-bottom:1px solid var(--line)}
+    .values,.inits,.voices{grid-template-columns:1fr}
+    .fitGrid,.growGrid,.twoCol{grid-template-columns:1fr;gap:28px}
+    .role{grid-template-columns:54px 1fr;gap:14px}
+    .roleMatch,.roleNew{width:54px}
+    .roleR{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;text-align:left}
+    .modebar .brandtag small{display:none}
+    .partner .wrap{flex-direction:column;align-items:flex-start}
+    .partner .pr,.partner .pr small{text-align:left}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+    .reveal{opacity:1;transform:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body class="mode-personal">
+  <!-- mode bar -->
+  <div class="modebar">
+    <div class="wrap">
+      <div class="brandtag"><span class="zero" aria-hidden="true">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="zsg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#56AB8C"/><stop offset="1" stop-color="#2A7C64"/></linearGradient>
+            <radialGradient id="zsh" cx="42%" cy="38%" r="66%"><stop offset="0" stop-color="#DEF6E8" stop-opacity=".95"/><stop offset="1" stop-color="#8FD9B4" stop-opacity=".22"/></radialGradient>
+            <clipPath id="zcc"><circle cx="24" cy="24" r="24"/></clipPath>
+          </defs>
+          <g clip-path="url(#zcc)">
+            <rect width="48" height="48" fill="url(#zsg)"/>
+            <g fill="url(#zsh)">
+              <ellipse cx="24" cy="24" rx="6.5" ry="18" transform="rotate(-22 24 24)"/>
+              <ellipse cx="24" cy="24" rx="6.5" ry="18" transform="rotate(22 24 24)"/>
+              <ellipse cx="24" cy="24" rx="18" ry="6.5" transform="rotate(-12 24 24)"/>
+              <ellipse cx="24" cy="24" rx="16" ry="6" transform="rotate(58 24 24)"/>
+              <ellipse cx="24" cy="24" rx="16" ry="6" transform="rotate(-58 24 24)"/>
+            </g>
+            <ellipse cx="22" cy="21" rx="9" ry="11" fill="#E4F7EC" opacity=".45" transform="rotate(-18 22 21)"/>
+          </g>
+        </svg>
+      </span> Zero <small>Talent Partner Network</small></div>
+      <div class="seg" role="tablist" aria-label="View mode">
+        <button id="mPub" role="tab" aria-selected="false">Public view</button>
+        <button id="mPer" role="tab" aria-selected="true" class="on">Your view</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- signed-in identity -->
+  <div class="whoami" id="whoami" aria-hidden="false">
+    <div class="wrap">
+      <span class="ava">M</span>
+      <span class="nm">Maya Okafor</span>
+      <span class="lvl">XP Level 7</span>
+      <span class="jr">Job-Ready · verified</span>
+    </div>
+  </div>
+
+  <!-- hero -->
+  <header class="hero">
+    <div class="wrap">
+      <span class="cover-tag"><span class="dot"></span> Actively hiring early-career</span>
+      <div class="heroGrid">
+        <div>
+          <div class="logo">
+            <span class="mark">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#052A1E"/></svg>
+            </span>
+            <h1>Halcyon</h1>
+            <span class="verified">Verified partner</span>
+          </div>
+          <p class="tagline">Storing clean energy so the grid never sleeps.</p>
+          <div class="facts">
+            <span><b>420</b> employees</span>
+            <span>Clean energy · Hardware + Software</span>
+            <span>Oakland · Austin · Remote</span>
+            <span>Series C</span>
+          </div>
+          <div class="heroActions">
+            <button class="btn btn-primary" data-scroll="#roles">See open roles</button>
+            <button class="btn btn-ghost" id="followBtn">＋ Follow</button>
+          </div>
+        </div>
+
+        <!-- readiness ring -->
+        <div class="ringCard">
+          <div class="ringWrap">
+            <svg viewBox="0 0 188 188" aria-hidden="true">
+              <defs><linearGradient id="chg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#2FBF85"/><stop offset="1" stop-color="#97E8BE"/>
+              </linearGradient></defs>
+              <circle class="track" cx="94" cy="94" r="80"/>
+              <circle class="meter" id="ring" cx="94" cy="94" r="80"/>
+            </svg>
+            <div class="ringCenter">
+              <div class="big"><span id="ringNum">0</span><small>%</small></div>
+              <div class="cap" id="ringCap">your match</div>
+            </div>
+          </div>
+          <p class="ringLabel p-only">You're a strong fit. <b>3 roles</b> are ready for you right now.</p>
+          <p class="ringLabel pub-only"><b>4 in 5 interns</b> get a return offer at Halcyon.</p>
+          <div class="ringCta p-only"><button class="btn btn-primary" data-scroll="#roles">View your matched roles</button></div>
+          <div class="ringCta pub-only"><button class="btn btn-primary">Sign in to see your match</button></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- stats -->
+  <section class="stats">
+    <div class="wrap">
+      <div class="stat"><div class="v num">420</div><div class="k">People on the team</div></div>
+      <div class="stat"><div class="v num">14</div><div class="k">Early-career roles open</div></div>
+      <div class="stat"><div class="v num">81<small>%</small></div><div class="k">Interns → full-time offers</div></div>
+      <div class="stat"><div class="v num">Top&nbsp;10<small>%</small></div><div class="k">Early-career pay band</div><div class="sub">of all early-career US pay bands</div></div>
+    </div>
+  </section>
+
+  <!-- why -->
+  <section class="block">
+    <div class="wrap">
+      <span class="eyebrow">Why you'll be excited</span>
+      <p class="why reveal">The hardest problem in climate isn't making clean power — it's having it <em>at 2am when the sun is down.</em> That's the problem you'd work on here, and it actually matters.</p>
+      <div class="values reveal">
+        <div class="value"><div class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 8v8l8 6 8-6V8l-8-6Z"/></svg></div><h3>Decarbonize, don't compromise</h3><p>We ship products that cut carbon for real, measured in tons — not press releases.</p></div>
+        <div class="value"><div class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg></div><h3>Engineer for decades</h3><p>Grid hardware lives 20+ years. We build things meant to outlast us.</p></div>
+        <div class="value"><div class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></svg></div><h3>Show your work</h3><p>Open dashboards, honest post-mortems. Interns present to the whole company.</p></div>
+        <div class="value"><div class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><h3>Default to ownership</h3><p>Your name is on what you build, from week one — including if it breaks.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- initiatives -->
+  <section class="block">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">On the workbench</span><h2>What you'd actually be working on</h2><p>Real projects shipping this year — not a vague "innovation" pitch.</p></div>
+      <div class="inits reveal">
+        <div class="init"><div class="top"><span class="ib">Hardware</span><span class="ic">100h</span></div><div class="body"><h3>Iron-air long-duration cells</h3><p>Batteries that hold 100 hours of charge from cheap, abundant iron — the chemistry that lets the grid run overnight.</p></div></div>
+        <div class="init"><div class="top"><span class="ib">ML / Data</span><span class="ic">⌁</span></div><div class="body"><h3>Forecast</h3><p>Models that predict demand and renewable supply 72 hours out, deciding when every battery on the network charges.</p></div></div>
+        <div class="init"><div class="top"><span class="ib">Software</span><span class="ic">∿</span></div><div class="body"><h3>Virtual power plant</h3><p>Software that stitches thousands of home batteries into one dispatchable plant utilities can rely on.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- fit (personal) / what we look for (public) -->
+  <section class="block">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow p-only">Your fit, by Zero XP</span>
+        <span class="eyebrow pub-only">What we look for</span>
+        <h2 class="p-only">How you line up with Halcyon</h2>
+        <h2 class="pub-only">What it takes to thrive here</h2>
+        <p class="p-only">Built from your verified XP — not a résumé keyword guess.</p>
+        <p class="pub-only">We hire for trajectory, not pedigree. Here's what we weigh.</p>
+      </div>
+
+      <!-- personal -->
+      <div class="fitGrid p-only">
+        <div class="fitPanel">
+          <span class="eyebrow">Your readiness vs. Halcyon's roles</span>
+          <h3>You're ready in 3 of 5 areas</h3>
+          <div class="fitRow"><div class="nm"><b>Data &amp; analysis</b><span>XP Level 8 · top 6% on Zero</span><span class="bench">vs. all Zero data-track users</span></div><div class="fitBar s" data-w="96"><i></i></div><span class="fitTag s">Strong</span></div>
+          <div class="fitRow"><div class="nm"><b>Applied projects</b><span>XP Level 7 · 4 shipped</span><span class="bench">vs. Halcyon's stated project bar</span></div><div class="fitBar s" data-w="84"><i></i></div><span class="fitTag s">Strong</span></div>
+          <div class="fitRow"><div class="nm"><b>Communication</b><span>XP Level 7</span><span class="bench">vs. all Zero users</span></div><div class="fitBar s" data-w="80"><i></i></div><span class="fitTag s">Strong</span></div>
+          <div class="fitRow"><div class="nm"><b>Machine learning</b><span>XP Level 5 · 60% to role bar</span><span class="bench">60% of the way to Halcyon's role bar</span></div><div class="fitBar b" data-w="60"><i></i></div><span class="fitTag b">Building</span></div>
+          <div class="fitRow"><div class="nm"><b>Systems &amp; infra</b><span>XP Level 3</span><span class="bench">34% of the way to Halcyon's role bar</span></div><div class="fitBar g" data-w="34"><i></i></div><span class="fitTag g">Grow</span></div>
+        </div>
+        <div>
+          <p class="why" style="font-size:21px;max-width:30ch">Your data and project XP already clear the bar for <em>two intern roles and one new-grad role.</em></p>
+          <p class="fitNote">Want the Software Engineer role too? You're one XP level away in Systems &amp; Infra. Zero has a 3-week track that closes most of that gap — finish it and your match jumps to an estimated 88%.</p>
+          <button class="btn btn-primary" style="margin-top:18px">See the track</button>
+        </div>
+      </div>
+
+      <!-- public -->
+      <div class="fitGrid pub-only">
+        <div>
+          <ul class="lookList">
+            <li><span class="ck">✓</span> Evidence you can take something messy and ship a working version of it.</li>
+            <li><span class="ck">✓</span> Comfort with data — you reach for numbers before opinions.</li>
+            <li><span class="ck">✓</span> Clear writing. Half the job is explaining your decision to someone who wasn't there.</li>
+            <li><span class="ck">✓</span> Curiosity about how physical systems and software meet. No energy background required.</li>
+          </ul>
+        </div>
+        <div class="pubLock">
+          <div class="ringMini num">●●●○○</div>
+          <p class="why" style="font-size:19px;max-width:24ch;margin:0 auto 10px">See exactly how you line up — area by area.</p>
+          <p class="fitNote" style="margin:0 0 16px">Zero scores your fit against this role from your verified XP, then shows you what to build to close the gap.</p>
+          <button class="btn btn-primary">Sign in to see your fit</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- roles -->
+  <section class="block" id="roles">
+    <div class="wrap">
+      <div class="rolesTop">
+        <div class="head" style="margin-bottom:0">
+          <span class="eyebrow">Open roles</span>
+          <h2>14 early-career roles open</h2>
+        </div>
+        <div class="sortNote p-only">Sorted by your match</div>
+        <div class="sortNote pub-only">Sorted by most recent</div>
+      </div>
+      <div class="roleList" id="roleList"></div>
+    </div>
+  </section>
+
+  <!-- growth + conversion -->
+  <section class="block">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Where it goes</span><h2>Built to turn into your first real job</h2></div>
+      <div class="growGrid">
+        <div class="convo">
+          <div class="big num">81%</div>
+          <div class="cap">of Halcyon interns get a full-time return offer</div>
+        </div>
+        <ul class="growList reveal">
+          <li><b>A real mentor, not a buddy</b><span>Every early-career hire is paired 1:1 with a senior engineer who reviews your work weekly.</span></li>
+          <li><b>$2,000 learning stipend</b><span>Courses, conferences, hardware — yours to spend, no approval theater.</span></li>
+          <li><b>Ship in month one</b><span>Your first PR goes to production in the first four weeks. We mean it.</span></li>
+          <li><b>A named path to full-time</b><span>Clear bar, clear timeline. You'll know where you stand by mid-internship.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- voices -->
+  <section class="block">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">From the team</span><h2>People who were where you are</h2></div>
+      <div class="voices reveal">
+        <div class="voice"><p class="q">I interned on Forecast with zero ML background. By August my model was deciding when 9,000 batteries charged. That doesn't happen at most places.</p><div class="who"><span class="va">D</span><div><b>Diego R.</b><span>Data Scientist · ex-intern '24</span></div><span class="zlink">Zero L8</span></div></div>
+        <div class="voice"><p class="q">The mentorship is the real thing. My mentor caught a bug that would've bricked a field unit — then walked me through why, instead of just fixing it.</p><div class="who"><span class="va">P</span><div><b>Priya S.</b><span>Hardware Engineer</span></div><span class="zlink">Zero L9</span></div></div>
+        <div class="voice"><p class="q">I came from a community college and a Zero profile, no fancy school. They looked at what I'd built. Nine months later I'm full-time.</p><div class="who"><span class="va">J</span><div><b>Jordan K.</b><span>Software Engineer · ex-intern '24</span></div><span class="zlink">Zero L7</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- practical + process -->
+  <section class="block">
+    <div class="wrap">
+      <div class="twoCol">
+        <div>
+          <div class="head" style="margin-bottom:20px"><span class="eyebrow">The practical stuff</span><h2>Logistics, upfront</h2></div>
+          <div class="infoGrid">
+            <div class="info"><div class="k">Locations</div><div class="v">Oakland · Austin · Remote-friendly</div></div>
+            <div class="info"><div class="k">Work setup</div><div class="v">Hybrid · 2 days in office</div></div>
+            <div class="info"><div class="k">Visa sponsorship</div><div class="v ok">Yes — OPT, CPT &amp; H-1B</div></div>
+            <div class="info"><div class="k">Intern pay band</div><div class="v">$45–$50 / hr · top 10%</div></div>
+          </div>
+          <div class="perks">
+            <span>Relocation covered</span><span>Intern housing</span><span>Equity for new grads</span><span>$2k learning stipend</span><span>Full health from day 1</span><span>4-day onboarding</span>
+          </div>
+        </div>
+        <div>
+          <div class="head" style="margin-bottom:20px"><span class="eyebrow">The hiring process</span><h2>What to expect · ~2 weeks</h2></div>
+          <ol class="steps">
+            <li><b>Apply through Zero <span class="t">5 min</span></b><span>Your verified XP comes with you — no re-uploading a résumé.</span></li>
+            <li><b>Recruiter chat <span class="t">20 min</span></b><span>A real human, on what you want — not a screening quiz.</span></li>
+            <li><b>Skills round <span class="t">60 min</span></b><span>A scoped problem close to the actual work. No trick whiteboarding.</span></li>
+            <li><b>Meet the team <span class="t">90 min</span></b><span>Two of your future teammates. You interview them too.</span></li>
+            <li><b>Offer <span class="t">48 hrs</span></b><span>Transparent number, fast turnaround, room to ask questions.</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- recruiter / partner inbound CTA (Improvement #2) -->
+  <section class="partner">
+    <div class="wrap">
+      <div class="pl">
+        <span class="eyebrow">Are you a recruiter or hiring manager?</span>
+        <h2>Get your company on Zero.</h2>
+        <p>Thousands of pre-vetted candidates are training on Zero right now. Set your hiring bar, list your roles, and let the right ones come to you.</p>
+      </div>
+      <div class="pr">
+        <button class="btn btn-primary">Claim your company page →</button>
+        <small>Free for beta partners · First 3 applicants feeless</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- footer cta -->
+  <div class="foot">
+    <h2 class="p-only">Maya, 3 roles are ready for you.</h2>
+    <h2 class="pub-only">See where you'd fit at Halcyon.</h2>
+    <p class="p-only">Your XP already clears the bar. Don't let it cool off.</p>
+    <p class="pub-only">Sign in with Zero and see your match, role by role.</p>
+    <button class="btn btn-primary p-only" data-scroll="#roles">View your matched roles</button>
+    <button class="btn btn-primary pub-only">Sign in to see your match</button>
+    <div class="by">Company page · powered by Zero TPN</div>
+  </div>
+
+<script>
+  var ROLES = [
+    {t:"Data Science Intern", dept:"Forecast team", loc:"Oakland / Remote", type:"Summer internship", pay:"$48/hr", band:"top 10%", posted:"2d", match:92, tag:"ready", days:2},
+    {t:"Grid Analytics Intern", dept:"Operations", loc:"Austin / Remote", type:"Internship", pay:"$45/hr", band:"top 10%", posted:"5d", match:88, tag:"ready", days:5},
+    {t:"Software Engineer", dept:"Platform · New grad", loc:"Oakland", type:"Full-time", pay:"$135k–$155k", band:"top 10%", posted:"4d", match:79, tag:"ready", days:4},
+    {t:"Operations Associate", dept:"Field ops · New grad", loc:"Austin", type:"Full-time", pay:"$70k–$85k", band:"market", posted:"3w", match:66, tag:"stretch", days:21},
+    {t:"Hardware Test Engineer", dept:"Cells · New grad", loc:"Oakland", type:"Full-time", pay:"$115k–$135k", band:"competitive", posted:"1w", match:54, tag:"grow", days:7},
+    {t:"Product Designer", dept:"VPP · New grad", loc:"Remote", type:"Full-time", pay:"$120k–$140k", band:"competitive", posted:"2w", match:38, tag:"grow", days:14}
+  ];
+  var TAGLABEL = {ready:"Ready to apply", grow:"Grow into this", stretch:"Stretch role"};
+  var TIP = "Score = your verified XP vs. this role's required bar. Top 6% = relative to all Zero users who've attempted this track.";
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function renderRoles(personal){
+    var list = ROLES.slice();
+    list.sort(function(a,b){ return personal ? b.match-a.match : a.days-b.days; });
+    var html = list.map(function(r){
+      var left = personal
+        ? '<div class="roleMatch"><div class="mv num">'+r.match+
+            '<span class="qm" tabindex="0" aria-label="'+esc(TIP)+'">?<span class="tip" role="tooltip">'+r.match+'% match vs. Halcyon\'s stated hiring bar for this role. '+esc(TIP)+'</span></span>'+
+          '</div><div class="ml">match</div></div>'
+        : '<div class="roleNew"><span class="dot">'+r.posted+'</span></div>';
+      var right = personal
+        ? '<div class="roleR"><span class="fitTag2 '+r.tag+'">'+TAGLABEL[r.tag]+'</span><span class="apply">Apply with Zero →</span></div>'
+        : '<div class="roleR"><span class="posted">Posted '+r.posted+' ago</span><span class="apply">Sign in for your match</span></div>';
+      return '<div class="role '+(personal?r.tag:'')+'" role="link" tabindex="0">'+left+
+        '<div class="roleMain"><h3>'+esc(r.t)+'</h3><div class="roleMeta">'+
+          '<span class="chip">'+esc(r.dept)+'</span><span class="chip">'+esc(r.loc)+'</span>'+
+          '<span class="chip">'+esc(r.type)+'</span><span class="chip pay">'+esc(r.pay)+' · '+esc(r.band)+'</span>'+
+        '</div></div>'+ right +'</div>';
+    }).join('');
+    document.getElementById('roleList').innerHTML = html;
+  }
+
+  var R = 80, C = 2*Math.PI*R;
+  var ring = document.getElementById('ring');
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  ring.style.strokeDasharray = C;
+  ring.style.strokeDashoffset = C;
+
+  function animateRing(target){
+    var el = document.getElementById('ringNum');
+    ring.style.strokeDashoffset = C*(1 - target/100);
+    if(reduceMotion){ el.textContent = target; return; }
+    var start=null, from=0, dur=1300;
+    function step(ts){ if(!start)start=ts; var p=Math.min((ts-start)/dur,1);
+      el.textContent = Math.round(from + (target-from)*(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2));
+      if(p<1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  }
+  function animateBars(){
+    document.querySelectorAll('.fitBar i').forEach(function(i){
+      var w = i.parentElement.getAttribute('data-w');
+      setTimeout(function(){ i.style.width = w+'%'; }, 200);
+    });
+  }
+
+  function setMode(personal){
+    document.body.className = personal ? 'mode-personal' : 'mode-public';
+    document.getElementById('mPer').classList.toggle('on', personal);
+    document.getElementById('mPub').classList.toggle('on', !personal);
+    document.getElementById('mPer').setAttribute('aria-selected', personal);
+    document.getElementById('mPub').setAttribute('aria-selected', !personal);
+    document.getElementById('whoami').setAttribute('aria-hidden', !personal);
+    document.getElementById('ringCap').textContent = personal ? 'your match' : 'interns return';
+    renderRoles(personal);
+    ring.style.strokeDashoffset = C;
+    document.getElementById('ringNum').textContent = '0';
+    setTimeout(function(){ animateRing(personal?82:81); if(personal) animateBars(); }, 120);
+  }
+
+  document.getElementById('mPer').addEventListener('click', function(){ setMode(true); });
+  document.getElementById('mPub').addEventListener('click', function(){ setMode(false); });
+
+  var fb = document.getElementById('followBtn');
+  fb.addEventListener('click', function(){
+    var on = fb.classList.toggle('following');
+    fb.textContent = on ? '✓ Following' : '＋ Follow';
+    fb.setAttribute('aria-pressed', on);
+  });
+
+  // smooth-scroll buttons
+  document.querySelectorAll('[data-scroll]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var el = document.querySelector(b.getAttribute('data-scroll'));
+      if(el) el.scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block:'start'});
+    });
+  });
+
+  // scroll reveal
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.16});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // re-animate bars when the fit panel scrolls in (personal)
+  var fitObserved = false;
+  var fitIO = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting && document.body.classList.contains('mode-personal') && !fitObserved){ fitObserved = true; animateBars(); } });
+  },{threshold:.2});
+  var fp = document.querySelector('.fitPanel'); if(fp) fitIO.observe(fp);
+
+  // init
+  setMode(true);
+</script>
+</body>
+</html>
